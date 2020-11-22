@@ -1,0 +1,70 @@
+const container = document.querySelector(".container");
+const seats = document.querySelectorAll(".row .seat:not(.occupied)");
+const count = document.getElementById("count");
+const total = document.getElementById("total");
+const movieSelect = document.getElementById("movie");
+let ticketPrice = +movieSelect.value;
+
+// + will turn it to a number
+
+// save selceted movie index and price
+
+function setMovieData(movieIndex, moviePrice) {
+  localStorage.setItem("selectedMovieIndex", movieIndex);
+  localStorage.setItem("selectedMoviePrice", moviePrice);
+}
+
+//  Update total and count
+function updateSelectedCount() {
+  const selectedSeats = document.querySelectorAll(".row .seat.selected");
+  // to save in a local storage
+  // copy the selected seat into array
+  // Map through array
+  // return a new indexes
+
+  const seatsIndex = [...selectedSeats].map((seat) =>
+    //return the index of the values of the seat
+    [...seats].indexOf(seat)
+  ); // indexOf is is the value in the array
+  // (IT WILL TURN IT TO AN ARRAY)we use the spread operator (...): it copys everything in the selectedseats and return them: it takes trhe values of array and pass it in
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax
+  //  map() is smalir to a forEach it will turn a an ARRAY compare to ForEach it loop and retunr whatever
+
+  //   console.log(seatsIndex);
+
+  localStorage.setItem("selectedSeats", JSON.stringify(seatsIndex)); // saving an array in the localStorage
+
+  // the end for local storage
+
+  const selectedSeatCount = selectedSeats.length; // (length) this will get the number in the array pr in our case the nodelist
+
+  count.innerText = selectedSeatCount;
+  total.innerText = selectedSeatCount * ticketPrice;
+}
+
+//  seat Event listener
+container.addEventListener("click", (e) => {
+  // to get the exact click seat or any where in the container
+  //   console.log(e.target);
+  if (
+    e.target.classList.contains("seat") &&
+    !e.target.classList.contains("occupied")
+  ) {
+    //   console.log(e.target); this will only run the seat all of them, and dont run the occupied ones
+    // to be able to select and unselect
+    e.target.classList.toggle("selected");
+
+    updateSelectedCount();
+  }
+});
+
+//  movie select Event
+movieSelect.addEventListener("change", (e) => {
+  ticketPrice = +e.target.value;
+  //  to save to localStorage
+  //  console.log(e.target.selectedIndex, e.target.value);
+  //  turn it to a functions et moviedata
+  setMovieData(e.target.selectedIndex, e.target.value);
+
+  updateSelectedCount();
+});
